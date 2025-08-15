@@ -1,0 +1,16 @@
+name: hanzo_env
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - fastqc
+  - multiqc
+  - hisat2
+  - subread
+  - r-base
+  - bioconductor-deseq2
+  - r-ggplot2
+  - r-pheatmap
+  - python=3.10
+  - pandas
+  - requests
