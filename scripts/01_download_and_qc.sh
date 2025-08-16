@@ -8,8 +8,9 @@ set -e
 # Create folders
 mkdir -p data/raw data/qc
 
-# Example SRA accession numbers 
-SRA_IDS=("SRR1039508" "SRR1039509" "SRR1039510" "SRR1039511")
+# SRA accession numbers 
+SRA_IDS=("SRR5944937" "SRR5944938" "SRR5944939" "SRR5944940")
+
 
 
 # Download FASTQ files
