@@ -11,8 +11,7 @@ import os
 # --------------------------------------------------
 # Create folders
 # --------------------------------------------------
-if not os.path.exists("results"):
-    os.makedirs("results")
+os.makedirs("results", exist_ok=True)
 
 # --------------------------------------------------
 # Load DESeq2 results
@@ -29,14 +28,34 @@ df = pd.read_csv(results_file)
 sig_genes = df[df["pvalue"] < 0.05]["Gene"].tolist()
 
 if not sig_genes:
-    print("No significant genes found. Exiting.")
+    print("No significant genes found. Creating empty annotation file.")
+    pd.DataFrame(columns=["query", "name", "entrezgene", "summary"]).to_csv(
+        "results/gene_annotations.csv", index=False
+    )
     exit()
 
 # --------------------------------------------------
 # Annotate using MyGene.info
 # --------------------------------------------------
 mg = MyGeneInfo()
-annotations = mg.querymany(sig_genes, scopes="symbol", fields="name,entrezgene,summary", species="human")
 
-# Convert to DataFrame
-annot_df = pd.DataFrame(annotations)
+# Query MyGene.info safely
+annotations = mg.querymany(
+    sig_genes,
+    scopes="symbol",
+    fields="name,entrezgene,summary",
+    species="human",
+    as_dataframe=True
+)
+
+# Fill missing columns with Na if necessary
+for col in ["name", "entrezgene", "summary"]:
+    if col not in annotations.columns:
+        annotations[col] = pd.NA
+
+# Save annotations
+annotations.reset_index(inplace=True)
+annotations.rename(columns={"query": "Gene"}, inplace=True)
+annotations.to_csv("results/gene_annotations.csv", index=False)
+
+print(f"Gene annotation complete. Results saved to 'results/gene_annotations.csv'.")
