@@ -1,7 +1,0 @@
-data/raw_fastq/
-*.fastq.gz
-*.bam
-*.sam
-*.log
-results/QC_reports/
-results/*.html
